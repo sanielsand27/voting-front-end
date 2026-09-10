@@ -1,0 +1,243 @@
+import { useEffect, useState } from "react";
+
+type Candidate = {
+  id: number;
+  fullname: string;
+  bio?: string;
+  photo?: string;
+  title?: string;
+  position_id: number;
+};
+
+export default function Candidates() {
+  const [candidates, setCandidates] = useState<Candidate[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [currentStep, setCurrentStep] = useState(0);
+  const [votedPositions, setVotedPositions] = useState<number[]>([]);
+
+
+
+useEffect(() => {
+  loadMyVotes();
+
+  fetch("http://192.168.135.42:5006/api/candidates")
+    .then((res) => res.json())
+    .then((data) => {
+      setCandidates(data);
+      setLoading(false);
+    })
+    .catch((err) => {
+      console.error(err);
+      setLoading(false);
+    });
+}, []);
+
+
+
+
+
+
+
+
+  const positions = [
+    ...new Set(
+      candidates
+        .map((candidate) => candidate.title)
+        .filter(Boolean)
+    ),
+  ];
+
+  const currentPosition = positions[currentStep];
+
+  const currentCandidates = candidates.filter(
+    (candidate) => candidate.title === currentPosition
+  );
+
+
+const voteCandidate = async (candidate: Candidate) => {
+  try {
+    const token = localStorage.getItem("token");
+
+    const response = await fetch(
+      "http://192.168.135.42:5006/api/votes",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          candidate_id: candidate.id,
+          position_id: candidate.position_id,
+        }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      alert(data.message);
+      return;
+    }
+
+    setVotedPositions((prev) => [
+      ...prev,
+      candidate.position_id,
+    ]);
+
+    alert(data.message);
+
+    if (currentStep < positions.length - 1) {
+      setCurrentStep((prev) => prev + 1);
+    } else {
+      setCurrentStep(positions.length);
+    }
+  } catch (error) {
+    console.error(error);
+    alert("Failed to submit vote");
+  }
+};
+
+
+
+
+const loadMyVotes = async () => {
+  try {
+    const token = localStorage.getItem("token");
+
+    const response = await fetch(
+      "http://192.168.135.42:5006/api/votes/my-votes",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const data = await response.json();
+
+    setVotedPositions(
+      data.map(
+        (vote: {
+          candidate_id: number;
+          position_id: number;
+          voted_at: string;
+        }) => vote.position_id
+      )
+    );
+  } catch (error) {
+    console.error("Failed to load votes:", error);
+  }
+};
+
+
+
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-slate-900">
+        <h2 className="text-2xl font-bold text-white">
+          Loading...
+        </h2>
+      </div>
+    );
+  }
+
+  if (
+    positions.length > 0 &&
+    currentStep >= positions.length
+  ) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-slate-900">
+        <div className="text-center">
+          <h1 className="text-5xl font-bold text-green-500">
+            ✅ Voting Complete
+          </h1>
+
+          <p className="mt-4 text-slate-300">
+            Thank you for participating in the election.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 p-6">
+      <div className="mx-auto max-w-7xl">
+        <h1 className="mb-4 text-center text-4xl font-bold text-white">
+          Election Wizard
+        </h1>
+
+        <div className="mb-8 text-center">
+          <h2 className="text-3xl font-bold text-cyan-400">
+            {currentPosition}
+          </h2>
+
+          <p className="mt-2 text-slate-400">
+            Step {currentStep + 1} of {positions.length}
+          </p>
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {currentCandidates.map((candidate) => {
+            const imageUrl =
+              "http://192.168.135.42:5006" +
+              (candidate.photo || "");
+
+            return (
+              <div
+                key={candidate.id}
+                className="overflow-hidden rounded-2xl border border-slate-700 bg-slate-800 shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
+              >
+                <div className="bg-slate-700 p-4">
+                  {imageUrl}
+                </div>
+
+                <div className="p-5">
+                  <h2 className="mb-2 text-2xl font-bold text-white">
+                    {candidate.fullname}
+                  </h2>
+
+                  {candidate.title && (
+                    <p className="mb-2 font-medium text-cyan-400">
+                      {candidate.title}
+                    </p>
+                  )}
+
+                  {candidate.bio && (
+                    <p className="mb-4 text-slate-300">
+                      {candidate.bio}
+                    </p>
+                  )}
+
+<button
+  onClick={() => voteCandidate(candidate)}
+  disabled={votedPositions.includes(
+    candidate.position_id
+  )}
+  className={`w-full rounded-xl py-3 font-semibold text-white transition ${
+    votedPositions.includes(candidate.position_id)
+      ? "bg-gray-500 cursor-not-allowed"
+      : "bg-blue-600 hover:bg-blue-700"
+  }`}
+>
+  {votedPositions.includes(candidate.position_id)
+    ? "Already Voted"
+    : "Vote"}
+</button>
+
+
+
+
+
+
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
