@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { errorAlert } from "../utils/alerts";
 export default function Login() {
   const navigate = useNavigate();
 
@@ -33,7 +33,7 @@ body: JSON.stringify({
       const data = await response.json();
 
       if (!response.ok) {
-        alert(data.message);
+	errorAlert("Login Failed", data.message);
         return;
       }
 

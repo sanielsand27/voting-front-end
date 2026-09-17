@@ -1,5 +1,12 @@
 import { useEffect, useState } from "react";
 
+import {
+  successAlert,
+  errorAlert,
+  confirmAlert
+} from "../utils/alerts";
+
+
 type Position = {
   id: number;
   title: string;
@@ -74,11 +81,19 @@ export default function Positions() {
         await response.json();
 
       if (!response.ok) {
-        alert(data.message);
+successAlert(
+  "Success",
+  data.message
+);
+
         return;
       }
 
-      alert(data.message);
+successAlert(
+  "Success",
+  data.message
+);
+
 
       setTitle("");
       setMaxVotes(1);
@@ -92,11 +107,13 @@ export default function Positions() {
   const deletePosition = async (
     id: number
   ) => {
-    const confirmed = window.confirm(
-      "Delete this position?"
-    );
+const result =
+  await confirmAlert(
+    "Delete Position?",
+    "This action cannot be undone."
+  );
 
-    if (!confirmed) return;
+if (!result.isConfirmed) return;
 
     try {
       const token =
@@ -116,8 +133,10 @@ export default function Positions() {
       const data =
         await response.json();
 
-      alert(data.message);
-
+successAlert(
+  "Success",
+  data.message
+);
       loadPositions();
     } catch (error) {
       console.error(error);

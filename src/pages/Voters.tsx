@@ -1,17 +1,29 @@
 import { useEffect, useState } from "react";
 
+
+import {
+  successAlert,
+  errorAlert,
+  warningAlert
+} from "../utils/alerts";
+
+
 type Voter = {
   id: number;
+  student_id: string;
   fullname: string;
   email: string;
 };
 
+
 export default function Voters() {
   const [voters, setVoters] = useState<Voter[]>([]);
 
-  const [fullname, setFullname] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+const [studentId, setStudentId] = useState("");
+const [fullname, setFullname] = useState("");
+const [email, setEmail] = useState("");
+const [password, setPassword] = useState("");
+
   const [file, setFile] = useState<File | null>(null);
 
 
@@ -59,6 +71,7 @@ export default function Voters() {
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
+	student_id: studentId,
             fullname,
             email,
             password,
@@ -69,10 +82,15 @@ export default function Voters() {
       const data = await response.json();
 
       if (!response.ok) {
-        alert(data.message);
+successAlert(
+  "Success",
+  data.message
+);
+
+
         return;
       }
-
+      setStudentId("");
       setFullname("");
       setEmail("");
       setPassword("");
@@ -135,7 +153,12 @@ export default function Voters() {
 
       const data = await response.json();
 
-      alert(data.message);
+successAlert(
+  "Success",
+  data.message
+);
+
+
     } catch (error) {
       console.error(error);
     }
@@ -174,9 +197,13 @@ const importExcel = async () => {
   const data =
     await response.json();
 
-  alert(
-    `Imported: ${data.imported}\nSkipped: ${data.skipped}`
-  );
+successAlert(
+  "Import Completed",
+  `Imported: ${data.imported}
+   Skipped: ${data.skipped}`
+);
+
+
 
   loadVoters();
 };
@@ -214,21 +241,6 @@ const importExcel = async () => {
     Upload Excel
   </button>
 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         <div className="mb-8 rounded-2xl bg-slate-800 p-6 shadow-xl">
           <h2 className="mb-4 text-2xl font-bold">
             Add Voter
@@ -238,6 +250,19 @@ const importExcel = async () => {
             onSubmit={createVoter}
             className="space-y-4"
           >
+<input
+  type="text"
+  placeholder="Student ID"
+  value={studentId}
+  onChange={(e) =>
+    setStudentId(e.target.value)
+  }
+  className="w-full rounded-lg border border-slate-600 bg-slate-700 p-3 text-white"
+/>
+
+
+
+
             <input
               type="text"
               placeholder="Full Name"
@@ -295,6 +320,9 @@ const importExcel = async () => {
                   <h3 className="text-lg font-bold">
                     {voter.fullname}
                   </h3>
+		<p className="text-cyan-400">
+                  ID: {voter.student_id}
+                </p>
 
                   <p className="text-slate-300">
                     {voter.email}

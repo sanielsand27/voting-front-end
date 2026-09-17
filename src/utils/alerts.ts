@@ -38,4 +38,19 @@ export const warningAlert = (
     background: "#1e293b",
     color: "#fff",
   });
+
+export const confirmAlert = (
+  title: string,
+  text: string
+) =>
+  Swal.fire({
+    title,
+    text,
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonColor: "#06b6d4",
+    cancelButtonColor: "#64748b",
+    background: "#1e293b",
+    color: "#fff",
+  });
 ``

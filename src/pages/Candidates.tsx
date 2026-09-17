@@ -1,6 +1,16 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import {
+  successAlert,
+  errorAlert,
+  warningAlert
+} from "../utils/alerts";
+
+
+
+
+
 
 type Candidate = {
   id: number;
@@ -30,6 +40,24 @@ useEffect(() => {
   const loadData = async () => {
     try {
       const token = localStorage.getItem("token");
+
+    const statusResponse = await fetch(
+      "http://192.168.135.42:5006/api/settings/election-status"
+    );
+
+    const statusData =
+      await statusResponse.json();
+
+    if (!statusData.election_open) {
+      await warningAlert(
+        "Election Closed",
+        "Voting is currently closed."
+      );
+
+      navigate("/results");
+      return;
+    }
+
 
       // Check if user already voted
       const summaryResponse = await fetch(
@@ -134,10 +162,10 @@ const toggleCandidate = (
       current.length >=
       candidate.max_votes
     ) {
-      alert(
-        `Only ${candidate.max_votes} candidate(s) may be selected`
-      );
-
+warningAlert(
+  "Selection Limit Reached",
+  `You can only select ${candidate.max_votes} candidate(s) for this position`
+);
       return prev;
     }
 
@@ -193,17 +221,40 @@ const submitVotes = async () => {
 
     if (!response.ok) {
       console.log("Server Error:", data);
-      alert(data.message);
+errorAlert(
+  "Ballot Submission Failed",
+  data.message
+);
+
       return;
     }
 
+await successAlert(
+  "Ballot Submitted",
+  "Your votes have been recorded successfully."
+);
 
-      setCurrentStep(positions.length + 1);
+setCurrentStep(
+  positions.length + 1
+);
+
     } catch (error) {
       console.error(error);
       alert("Failed to submit ballot");
     }
   };
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -298,6 +349,7 @@ if (
   positions.length > 0 &&
   currentStep > positions.length
 ) {
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-slate-900">
       <div className="text-center">

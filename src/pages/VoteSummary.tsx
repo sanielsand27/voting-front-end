@@ -103,7 +103,7 @@ export default function VoteSummary() {
               {votes.map((vote, index) => {
                 const imageUrl = vote.photo
                   ? `http://192.168.135.42:5006${vote.photo}`
-                  : "";
+                  : undefined;
 
                 return (
                   <div
