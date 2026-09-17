@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 
 import {
   successAlert,
-  errorAlert,
   confirmAlert
 } from "../utils/alerts";
 
