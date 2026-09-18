@@ -2,9 +2,7 @@ import { useEffect, useState } from "react";
 
 
 import {
-  successAlert,
-  errorAlert,
-  warningAlert
+  successAlert
 } from "../utils/alerts";
 
 
