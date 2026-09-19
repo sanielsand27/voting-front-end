@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {API_URL, SERVER_URL} from "../config/api";
+
 
 import {
   successAlert,
@@ -42,7 +44,7 @@ useEffect(() => {
       const token = localStorage.getItem("token");
 
     const statusResponse = await fetch(
-      "http://192.168.135.42:5006/api/settings/election-status"
+      `${API_URL}/settings/election-status`
     );
 
     const statusData =
@@ -61,7 +63,7 @@ useEffect(() => {
 
       // Check if user already voted
       const summaryResponse = await fetch(
-        "http://192.168.135.42:5006/api/votes/summary",
+        `${API_URL}/votes/summary`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -82,7 +84,7 @@ useEffect(() => {
 
       // Load candidates
       const candidatesResponse = await fetch(
-        "http://192.168.135.42:5006/api/candidates"
+        `${API_URL}/candidates`
       );
 
       const candidatesData =
@@ -204,7 +206,7 @@ const submitVotes = async () => {
     console.log("votes payload", votes);
 
     const response = await fetch(
-      "http://192.168.135.42:5006/api/votes/submit",
+      `${API_URL}/votes/submit`,
       {
         method: "POST",
         headers: {
@@ -412,8 +414,7 @@ if (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {currentCandidates.map((candidate) => {
             const imageUrl =
-              "http://192.168.135.42:5006" +
-              (candidate.photo || "");
+              `${SERVER_URL}${candidate.photo}`;
 
 
 const selected =

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { API_URL, SERVER_URL } from "../config/api";
 
 
 import {
@@ -46,9 +47,12 @@ const [electionOpen, setElectionOpen] = useState(true);
   const loadStats = async () => {
     try {
       const token = localStorage.getItem("token");
+	console.log("API_URL:", API_URL);
+
+
 
       const response = await fetch(
-        "http://192.168.135.42:5006/api/admin/stats",
+        `${API_URL}/admin/stats`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -68,7 +72,7 @@ const [electionOpen, setElectionOpen] = useState(true);
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        "http://192.168.135.42:5006/api/admin/position-results",
+        `${API_URL}/admin/position-results`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -131,7 +135,7 @@ const [electionOpen, setElectionOpen] = useState(true);
 
 const loadStatus = async () => {
   const response = await fetch(
-    "http://192.168.135.42:5006/api/settings/election-status"
+    `${API_URL}/settings/election-status`
   );
 
   const data =
@@ -152,7 +156,7 @@ const toggleElection = async () => {
     localStorage.getItem("token");
 
   const response = await fetch(
-    "http://192.168.135.42:5006/api/settings/election-status",
+    `${API_URL}/settings/election-status`,
     {
       method: "PUT",
       headers: {
@@ -405,22 +409,6 @@ const toggleElection = async () => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         {/* Live Results */}
         <div className="rounded-2xl bg-slate-800 p-6 shadow-xl">
           <div className="mb-6 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
@@ -473,7 +461,7 @@ const toggleElection = async () => {
 
                       const imageUrl =
                         candidate.photo
-                          ? `http://192.168.135.42:5006${candidate.photo}`
+                          ? `${SERVER_URL}${candidate.photo}`
                           : "";
 
                       const isLeader =

@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { API_URL, SERVER_URL} from "../config/api";
+
 type VoteSummaryItem = {
   position: string;
   fullname: string;
@@ -25,7 +27,7 @@ export default function VoteSummary() {
           localStorage.getItem("token");
 
         const response = await fetch(
-          "http://192.168.135.42:5006/api/votes/summary",
+          `${API_URL}/votes/summary`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -102,7 +104,7 @@ export default function VoteSummary() {
             <div className="space-y-4">
               {votes.map((vote, index) => {
                 const imageUrl = vote.photo
-                  ? `http://192.168.135.42:5006${vote.photo}`
+                  ? `${API_URL}${vote.photo}`
                   : undefined;
 
                 return (

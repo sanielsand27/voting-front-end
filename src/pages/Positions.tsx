@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { API_URL, SERVER_URL } from "../config/api";
+
 
 import {
   successAlert,
@@ -28,7 +30,7 @@ export default function Positions() {
         localStorage.getItem("token");
 
       const response = await fetch(
-        "http://192.168.135.42:5006/api/positions",
+        `${API_URL}/positions`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -60,7 +62,7 @@ export default function Positions() {
         localStorage.getItem("token");
 
       const response = await fetch(
-        "http://192.168.135.42:5006/api/positions",
+        `${API_URL}/positions`,
         {
           method: "POST",
           headers: {
@@ -119,7 +121,7 @@ if (!result.isConfirmed) return;
         localStorage.getItem("token");
 
       const response = await fetch(
-        `http://192.168.135.42:5006/api/positions/${id}`,
+        `${API_URL}/positions/${id}`,
         {
           method: "DELETE",
           headers: {
