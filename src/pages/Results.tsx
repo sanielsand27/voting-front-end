@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+import {API_URL,SERVER_URL} from "../config/api";
+
 type Result = {
   id: number;
   fullname: string;
@@ -12,7 +14,7 @@ export default function Results() {
   const [results, setResults] = useState<Result[]>([]);
 
   useEffect(() => {
-    fetch("http://192.168.135.42:5006/api/votes/results")
+    fetch(`${API_URL}/votes/results`)
       .then((res) => res.json())
       .then(setResults)
       .catch(console.error);
@@ -28,8 +30,7 @@ export default function Results() {
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {results.map((candidate) => {
             const imageUrl =
-              "http://192.168.135.42:5006" +
-              (candidate.photo || "");
+              `${SERVER_URL}${candidate.photo}`;
 
             return (
               <div

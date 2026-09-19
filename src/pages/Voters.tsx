@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-
+import {API_URL, SERVER_URL} from "../config/api";
 
 import {
   successAlert
@@ -32,7 +32,7 @@ const [password, setPassword] = useState("");
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        "http://192.168.135.42:5006/api/admin/voters",
+        `${API_URL}/admin/voters`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -61,7 +61,7 @@ const [password, setPassword] = useState("");
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        "http://192.168.135.42:5006/api/admin/voters",
+        `${API_URL}/admin/voters`,
         {
           method: "POST",
           headers: {
@@ -108,7 +108,7 @@ successAlert(
       const token = localStorage.getItem("token");
 
       await fetch(
-        `http://192.168.135.42:5006/api/admin/voters/${id}`,
+        `${API_URL}/admin/voters/${id}`,
         {
           method: "DELETE",
           headers: {
@@ -136,7 +136,7 @@ successAlert(
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        `http://192.168.135.42:5006/api/admin/voters/${id}/password`,
+        `${API_URL}/admin/voters/${id}/password`,
         {
           method: "PUT",
           headers: {
@@ -181,7 +181,7 @@ const importExcel = async () => {
   );
 
   const response = await fetch(
-    "http://192.168.135.42:5006/api/admin/voters/import",
+    `{API_URL}/admin/voters/import`,
     {
       method: "POST",
       headers: {
