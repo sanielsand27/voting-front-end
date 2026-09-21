@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { errorAlert } from "../utils/alerts";
+import { API_URL } from "../config/api";
+
+
 export default function Login() {
   const navigate = useNavigate();
 
@@ -16,7 +19,7 @@ const [password, setPassword] = useState("");
 
     try {
       const response = await fetch(
-        "http://192.168.135.42:5006/api/auth/login",
+        `${ API_URL }/auth/login`,
         {
           method: "POST",
           headers: {
