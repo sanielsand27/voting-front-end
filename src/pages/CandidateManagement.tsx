@@ -1,4 +1,7 @@
 import { useEffect, useState } from "react";
+import {API_URL, SERVER_URL} from "../config/api";
+
+
 
 type Position = {
   id: number;
@@ -26,7 +29,7 @@ export default function CandidateManagement() {
     const token = localStorage.getItem("token");
 
     const response = await fetch(
-      "http://192.168.135.42:5006/api/candidates",
+      `${API_URL}/candidates`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -42,7 +45,7 @@ export default function CandidateManagement() {
     const token = localStorage.getItem("token");
 
     const response = await fetch(
-      "http://192.168.135.42:5006/api/positions",
+      `${API_URL}/positions`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -77,7 +80,7 @@ export default function CandidateManagement() {
     }
 
     const response = await fetch(
-      "http://192.168.135.42:5006/api/candidates",
+      `${API_URL}/candidates`,
       {
         method: "POST",
         headers: {
@@ -116,7 +119,7 @@ export default function CandidateManagement() {
     const token = localStorage.getItem("token");
 
     const response = await fetch(
-      `http://192.168.135.42:5006/api/candidates/${id}`,
+      `${API_URL}/candidates/${id}`,
       {
         method: "DELETE",
         headers: {
@@ -214,8 +217,7 @@ export default function CandidateManagement() {
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {candidates.map((candidate) => {
             const imageUrl =
-              "http://192.168.135.42:5006" +
-              (candidate.photo || "");
+              `${SERVER_URL}${candidate.photo || ""}`;
 
             return (
               <div
