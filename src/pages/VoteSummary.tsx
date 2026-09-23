@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { API_URL} from "../config/api";
+import { API_URL, SERVER_URL} from "../config/api";
 
 type VoteSummaryItem = {
   position: string;
@@ -104,7 +104,7 @@ export default function VoteSummary() {
             <div className="space-y-4">
               {votes.map((vote, index) => {
                 const imageUrl = vote.photo
-                  ? `${API_URL}${vote.photo}`
+                  ? `${SERVER_URL}${vote.photo}`
                   : undefined;
 
                 return (
