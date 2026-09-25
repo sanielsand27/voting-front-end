@@ -181,7 +181,7 @@ const importExcel = async () => {
   );
 
   const response = await fetch(
-    `{API_URL}/admin/voters/import`,
+    `${API_URL}/admin/voters/import`,
     {
       method: "POST",
       headers: {
